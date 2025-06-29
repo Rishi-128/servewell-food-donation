@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - ServeWell</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .enhanced-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .signup-form {
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+        .signup-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        .input-enhanced:focus {
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            border-color: #4f46e5;
+        }
+        .role-card {
+            transition: all 0.3s ease;
+        }
+        .role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="enhanced-gradient min-h-screen">
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-4 right-4 z-50 space-y-2">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'error' }} max-w-sm glass-effect rounded-xl p-4">
+                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} mr-2"></i>
+                        {{ message }}
+                        <button onclick="this.parentElement.remove()" class="ml-2 text-lg font-bold">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Enhanced Navigation -->
+    <nav class="bg-white/90 glass-effect shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-heart text-red-500 text-2xl mr-2"></i>
+                    <a href="{{ url_for('home') }}" class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ServeWell</a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="{{ url_for('home') }}" class="text-gray-700 hover:text-blue-600 transition duration-300 font-medium">
+                        <i class="fas fa-home mr-1"></i>Home
+                    </a>
+                    <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-blue-600 transition duration-300 font-medium">
+                        <i class="fas fa-sign-in-alt mr-1"></i>Login
+                    </a>
+                    <span class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-full font-semibold">
+                        <i class="fas fa-user-plus mr-1"></i>Sign Up
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Enhanced Signup Form -->
+    <section class="flex items-center justify-center py-12 px-4 min-h-screen">
+        <div class="max-w-lg w-full">
+            <div class="bg-white/95 glass-effect rounded-2xl shadow-2xl p-8 signup-form">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 bg-gradient-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-user-plus text-3xl bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Join ServeWell! 🌟</h2>
+                    <p class="text-gray-600">Create your account and start making a difference</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('signup') }}" class="space-y-6">
+                    <div>
+                        <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2 text-green-600"></i>Username
+                        </label>
+                        <input type="text" id="username" name="username" required 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-green-500 focus:border-green-500 transition duration-300 input-enhanced bg-gray-50 focus:bg-white"
+                               placeholder="Choose a unique username">
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-green-600"></i>Password
+                        </label>
+                        <input type="password" id="password" name="password" required 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-green-500 focus:border-green-500 transition duration-300 input-enhanced bg-gray-50 focus:bg-white"
+                               placeholder="Create a secure password">
+                    </div>
+
+                    <div>
+                        <label for="role" class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-users mr-2 text-green-600"></i>Account Type
+                        </label>
+                        <select id="role" name="role" required 
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-green-500 focus:border-green-500 transition duration-300 input-enhanced bg-gray-50 focus:bg-white">
+                            <option value="">Select your role</option>
+                            <option value="donor">🍽️ Donor (Food Provider)</option>
+                            <option value="ngo">🏠 NGO (Community Organization)</option>
+                        </select>
+                    </div>
+
+                    <!-- Role Information Cards -->
+                    <div class="bg-gradient-to-r from-blue-50 to-green-50 border border-blue-200 rounded-xl p-4 role-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-blue-600 text-lg mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-blue-800 mb-2">Account Types Explained</h4>
+                                <div class="space-y-2 text-sm">
+                                    <p class="text-blue-700">
+                                        <strong>🍽️ Donor:</strong> Perfect for restaurants, caterers, event organizers, or individuals with surplus food to donate
+                                    </p>
+                                    <p class="text-blue-700">
+                                        <strong>🏠 NGO:</strong> Ideal for charities, community centers, shelters, and organizations that distribute food to those in need
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-4 px-4 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-rocket mr-2"></i>Create My ServeWell Account
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Already have an account?</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ url_for('login') }}" class="text-blue-600 hover:text-blue-700 font-semibold transition duration-300">
+                            Sign in here <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer class="bg-gray-900/95 glass-effect text-white py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-heart text-red-500 text-2xl mr-2"></i>
+                        <h3 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">ServeWell</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Connecting food donors with NGOs to reduce waste and help communities in need.</p>
+                    <p class="text-gray-400 text-sm">Making a difference, one meal at a time. 🍽️</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 text-blue-400">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('home') }}" class="text-gray-300 hover:text-white transition duration-300"><i class="fas fa-home mr-2"></i>Home</a></li>
+                        <li><a href="{{ url_for('signup') }}" class="text-gray-300 hover:text-white transition duration-300"><i class="fas fa-user-plus mr-2"></i>Join Us</a></li>
+                        <li><a href="{{ url_for('login') }}" class="text-gray-300 hover:text-white transition duration-300"><i class="fas fa-sign-in-alt mr-2"></i>Login</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4 text-blue-400">Contact Info</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><i class="fas fa-envelope mr-2 text-blue-400"></i>help@servewell.org</li>
+                        <li><i class="fas fa-phone mr-2 text-blue-400"></i>+1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt mr-2 text-blue-400"></i>123 Community St, City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 ServeWell. Making a difference together. ❤️</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
+    <!-- Signup Form -->
+    <section class="flex items-center justify-center py-12 px-4 min-h-screen">
+        <div class="max-w-md w-full">
+            <div class="bg-white rounded-xl shadow-lg p-8 signup-form">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-plus text-green-600 text-2xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800">Join ServeWell</h2>
+                    <p class="text-gray-600 mt-2">Create your account and start making a difference</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('signup') }}" class="space-y-6">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-1 text-green-600"></i>Username
+                        </label>
+                        <input type="text" id="username" name="username" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-300"
+                               placeholder="Choose a username">
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-1 text-green-600"></i>Password
+                        </label>
+                        <input type="password" id="password" name="password" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-300"
+                               placeholder="Create a password">
+                    </div>
+
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-users mr-1 text-green-600"></i>Account Type
+                        </label>
+                        <select id="role" name="role" required 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 transition duration-300">
+                            <option value="">Select your role</option>
+                            <option value="donor">🍽️ Donor (Event Organizer/Caterer)</option>
+                            <option value="ngo">🏠 NGO (Community Organization)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-blue-600 text-lg mr-3 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-blue-800 mb-1">Account Types</h4>
+                                <p class="text-sm text-blue-700"><strong>Donor:</strong> Donate surplus food from events/restaurants</p>
+                                <p class="text-sm text-blue-700"><strong>NGO:</strong> Collect and distribute food to those in need</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-green-700 hover:to-blue-700 transition duration-300 transform hover:scale-105">
+                        <i class="fas fa-user-plus mr-2"></i>Create Account
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600">Already have an account? 
+                        <a href="{{ url_for('login') }}" class="text-blue-600 hover:text-blue-700 font-semibold">Sign in here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-heart text-red-500 text-2xl mr-2"></i>
+                        <h4 class="text-2xl font-bold">ServeWell</h4>
+                    </div>
+                    <p class="text-gray-400">Connecting hearts, transforming lives through the power of food sharing.</p>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Get Started</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="{{ url_for('home') }}" class="hover:text-white transition">Home</a></li>
+                        <li><a href="{{ url_for('signup') }}" class="hover:text-white transition">Join as Donor</a></li>
+                        <li><a href="{{ url_for('signup') }}" class="hover:text-white transition">Join as NGO</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Support</h5>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Community Guidelines</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Connect</h5>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 ServeWell. All rights reserved. Join our mission to reduce food waste.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

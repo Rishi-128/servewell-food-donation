@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "username": "aac",
+    "password": "aac",
+    "role": "donor",
+    "created_at": "2025-06-25T12:45:59.897088"
+  },
+  {
+    "id": 2,
+    "username": "Rishi",
+    "password": "qw",
+    "role": "ngo",
+    "created_at": "2025-06-25T12:55:49.511021"
+  }
+]

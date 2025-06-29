@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServeWell - Connecting Hearts, Transforming Lives</title>
+    <!-- Custom Tailwind CSS Configuration -->
+    <!-- Note: Tailwind CDN is used for development. For production, consider using the CLI build process -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind after it's loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof tailwind !== 'undefined') {
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                'servewell-blue': '#3b82f6',
+                                'servewell-green': '#10b981',
+                                'servewell-purple': '#8b5cf6',
+                            },
+                            fontFamily: {
+                                'sans': ['Inter', 'system-ui', 'sans-serif'],
+                            },
+                            animation: {
+                                'float': 'float 3s ease-in-out infinite',
+                                'pulse-slow': 'pulse 3s ease-in-out infinite',
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Suppress Tailwind warning for demo purposes */
+        @media screen {
+            .tailwind-warning { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Stunning Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-logo">
+            <i class="fas fa-heart text-white text-3xl"></i>
+        </div>
+        <h1 class="loading-text">ServeWell</h1>
+        <p class="loading-subtitle">Nourish • Connect • Transform</p>
+        <div class="loading-spinner"></div>
+    </div>
+    
+    <style>
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: gradient-shift 3s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite, rotate 4s linear infinite;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .loading-text {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+        
+        .loading-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease forwards 1s;
+            letter-spacing: 2px;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="fixed top-4 right-4 z-50 space-y-2">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'error' }} max-w-sm">
+                        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} mr-2"></i>
+                        {{ message }}
+                        <button onclick="this.parentElement.remove()" class="ml-2 text-lg font-bold">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg fixed w-full z-40">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center group cursor-pointer">
+                    <!-- Enhanced Attractive Logo -->
+                    <div class="relative mr-3">
+                        <!-- Main logo container with gradient background -->
+                        <div class="w-14 h-14 bg-gradient-to-br from-orange-400 via-red-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-500 relative overflow-hidden transform group-hover:scale-110">
+                            <!-- Animated shine effect -->
+                            <div class="absolute inset-0 bg-gradient-to-br from-white via-transparent to-transparent opacity-20 transform -skew-y-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700"></div>
+                            
+                            <!-- Logo icons combination -->
+                            <div class="relative z-10 flex items-center justify-center">
+                                <!-- Heart icon (main) -->
+                                <i class="fas fa-heart text-white text-xl transform group-hover:scale-125 transition-transform duration-300"></i>
+                                <!-- Bowl/plate icon overlay -->
+                                <div class="absolute -top-1 -right-1 w-4 h-4 bg-yellow-300 rounded-full flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                                    <i class="fas fa-utensils text-orange-700 text-xs"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Pulsing border effect -->
+                            <div class="absolute inset-0 rounded-2xl border-2 border-white opacity-0 group-hover:opacity-50 group-hover:scale-110 transition-all duration-500"></div>
+                        </div>
+                        
+                        <!-- Floating sparkles -->
+                        <div class="absolute -top-1 -left-1 w-2 h-2 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
+                        <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-pink-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-bounce"></div>
+                    </div>
+                    
+                    <!-- Enhanced Text Logo -->
+                    <div class="flex flex-col">
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent group-hover:from-red-600 group-hover:via-orange-600 group-hover:to-yellow-600 transition-all duration-500 tracking-tight">
+                            ServeWell
+                        </h1>
+                        <p class="text-xs text-gray-500 font-medium tracking-wider opacity-80 group-hover:opacity-100 transition-all duration-300 transform translate-y-1 group-hover:translate-y-0">
+                            <span class="inline-block animate-pulse">🌟</span> 
+                            Nourish • Connect • Transform 
+                            <span class="inline-block animate-pulse delay-150">✨</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="nav-link relative text-gray-700 hover:text-orange-600 transition-all duration-300 font-medium group">
+                        Home
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#features" class="nav-link relative text-gray-700 hover:text-orange-600 transition-all duration-300 font-medium group">
+                        Features
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#impact" class="nav-link relative text-gray-700 hover:text-orange-600 transition-all duration-300 font-medium group">
+                        Impact
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    
+                    {% if session.user_id %}
+                        <div class="flex items-center space-x-4">
+                            <span class="text-gray-600 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="fas fa-user-circle mr-1 text-orange-500"></i>{{ session.username }}
+                            </span>
+                            {% if session.role == 'donor' %}
+                                <a href="{{ url_for('donate') }}" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2.5 rounded-full hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium">
+                                    <i class="fas fa-hand-holding-heart mr-2"></i>Donate Food
+                                </a>
+                            {% elif session.role == 'ngo' %}
+                                <a href="{{ url_for('ngo_dashboard') }}" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2.5 rounded-full hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                </a>
+                            {% endif %}
+                            <a href="{{ url_for('logout') }}" class="text-red-500 hover:text-red-600 transition-all duration-300 p-2 rounded-full hover:bg-red-50">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center space-x-4">
+                            <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-orange-600 transition-all duration-300 font-medium relative group">
+                                <i class="fas fa-sign-in-alt mr-1"></i>Login
+                                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 group-hover:w-full transition-all duration-300"></span>
+                            </a>
+                            <a href="{{ url_for('signup') }}" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-2.5 rounded-full hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium">
+                                <i class="fas fa-user-plus mr-2"></i>Join Us
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 transition duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden mobile-menu bg-white border-t border-gray-200 px-4 py-6 space-y-4" style="transform: translateX(-100%); opacity: 0;">
+                <a href="#home" class="block text-gray-700 hover:text-blue-600 transition duration-300 py-2">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="#features" class="block text-gray-700 hover:text-blue-600 transition duration-300 py-2">
+                    <i class="fas fa-star mr-2"></i>Features
+                </a>
+                <a href="#impact" class="block text-gray-700 hover:text-blue-600 transition duration-300 py-2">
+                    <i class="fas fa-chart-line mr-2"></i>Impact
+                </a>
+                
+                {% if session.user_id %}
+                    <div class="border-t border-gray-200 pt-4">
+                        <div class="text-gray-600 mb-3">
+                            <i class="fas fa-user-circle mr-2"></i>Welcome, {{ session.username }}!
+                        </div>
+                        {% if session.role == 'donor' %}
+                            <a href="{{ url_for('donate') }}" class="block bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition duration-300 mb-3 text-center">
+                                <i class="fas fa-hand-holding-heart mr-2"></i>Donate Food
+                            </a>
+                        {% elif session.role == 'ngo' %}
+                            <a href="{{ url_for('ngo_dashboard') }}" class="block bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-300 mb-3 text-center">
+                                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                            </a>
+                        {% endif %}
+                        <a href="{{ url_for('logout') }}" class="block text-red-600 hover:text-red-700 transition duration-300 py-2 text-center">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="border-t border-gray-200 pt-4">
+                        <a href="{{ url_for('login') }}" class="block text-gray-700 hover:text-blue-600 transition duration-300 py-2 mb-3">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </a>
+                        <a href="{{ url_for('signup') }}" class="block bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-300 text-center">
+                            <i class="fas fa-user-plus mr-2"></i>Join Us
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Banner with Slogans -->
+    <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-6 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="relative max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <div class="flex flex-wrap justify-center items-center gap-6 md:gap-8">
+                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <i class="fas fa-heart text-red-300 text-lg"></i>
+                        <span class="font-semibold">"Every Meal Matters"</span>
+                    </div>
+                    <div class="hidden md:block w-px h-6 bg-white opacity-30"></div>
+                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <i class="fas fa-hands-helping text-yellow-300 text-lg"></i>
+                        <span class="font-semibold">"Connecting Communities"</span>
+                    </div>
+                    <div class="hidden md:block w-px h-6 bg-white opacity-30"></div>
+                    <div class="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <i class="fas fa-leaf text-green-300 text-lg"></i>
+                        <span class="font-semibold">"Zero Waste Future"</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Hero Section -->
+    <section id="home" class="hero-section bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 text-white pt-32 pb-16 min-h-screen flex items-center relative overflow-hidden">
+        <!-- Enhanced Background decoration -->
+        <div class="absolute inset-0 overflow-hidden">
+            <!-- Floating food icons -->
+            <div class="absolute top-20 left-20 text-6xl opacity-20 animate-float">🍎</div>
+            <div class="absolute top-40 right-32 text-4xl opacity-15 animate-float" style="animation-delay: 1s;">🥕</div>
+            <div class="absolute bottom-32 left-16 text-5xl opacity-10 animate-float" style="animation-delay: 2s;">🍞</div>
+            <div class="absolute bottom-20 right-20 text-3xl opacity-20 animate-float" style="animation-delay: 1.5s;">🥛</div>
+            <div class="absolute top-60 left-1/3 text-4xl opacity-15 animate-float" style="animation-delay: 0.5s;">🌾</div>
+            
+            <!-- Gradient orbs -->
+            <div class="absolute top-1/4 -left-20 w-96 h-96 bg-white opacity-5 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-yellow-300 opacity-10 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white opacity-5 rounded-full animate-ping"></div>
+            
+            <!-- Sparkle effects -->
+            <div class="absolute top-32 left-1/4 w-2 h-2 bg-yellow-300 rounded-full animate-ping"></div>
+            <div class="absolute top-80 right-1/4 w-1 h-1 bg-white rounded-full animate-ping" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-40 left-1/2 w-1.5 h-1.5 bg-pink-300 rounded-full animate-ping" style="animation-delay: 1s;"></div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 py-16 lg:py-24">
+            <div class="grid lg:grid-cols-2 gap-12 items-stretch min-h-[600px]">
+                <div class="text-center lg:text-left hero-content">
+                    <div class="hero-text-content">
+                        <h2 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 fade-in leading-tight">
+                            Connecting Hearts,<br>
+                            <span class="text-yellow-300">Transforming Lives</span>
+                        </h2>
+                        <p class="text-lg sm:text-xl mb-8 fade-in opacity-90 leading-relaxed max-w-2xl">
+                            Turn surplus food into hope. Connect donors with NGOs to reduce waste and feed those in need. 
+                            Together, we can make every meal count and create lasting impact in our communities.
+                        </p>
+                    </div>
+
+                    <div class="hero-buttons-container">
+                        <div class="flex flex-col sm:flex-row gap-4 fade-in justify-center lg:justify-start hero-buttons">
+                        {% if session.user_id %}
+                            {% if session.role == 'donor' %}
+                                <a href="{{ url_for('donate') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                    <i class="fas fa-hand-holding-heart mr-2"></i>Donate Food Now
+                                </a>
+                            {% elif session.role == 'ngo' %}
+                                <a href="{{ url_for('ngo_dashboard') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                    <i class="fas fa-tachometer-alt mr-2"></i>View Dashboard
+                                </a>
+                            {% endif %}
+                            <div class="bg-white bg-opacity-20 backdrop-blur-sm px-6 py-3 rounded-lg border border-white border-opacity-30 text-center">
+                                <span class="text-white font-semibold">
+                                    <i class="fas fa-user-circle mr-2"></i>Welcome back, {{ session.username }}!
+                                </span>
+                            </div>
+                        {% else %}
+                            <a href="{{ url_for('signup') }}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-rocket mr-2"></i>Get Started
+                            </a>
+                            <a href="{{ url_for('login') }}" class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Login
+                            </a>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="relative">
+                        <div class="w-80 h-80 xl:w-96 xl:h-96 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto hero-illustration border border-white/20">
+                            <i class="fas fa-utensils text-8xl xl:text-9xl text-white opacity-80 floating"></i>
+                        </div>
+                        <!-- Floating Icons -->
+                        <div class="absolute top-10 -left-10 w-20 h-20 bg-gradient-to-br from-yellow-300 to-yellow-400 rounded-full flex items-center justify-center floating-icon shadow-lg">
+                            <i class="fas fa-heart text-xl text-red-600"></i>
+                        </div>
+                        <div class="absolute bottom-10 -right-10 w-16 h-16 bg-gradient-to-br from-green-300 to-green-400 rounded-full flex items-center justify-center floating-icon shadow-lg">
+                            <i class="fas fa-hand-holding-heart text-lg text-green-700"></i>
+                        </div>
+                        <div class="absolute top-1/2 -right-16 w-14 h-14 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full flex items-center justify-center floating-icon shadow-lg">
+                            <i class="fas fa-users text-blue-700"></i>
+                        </div>
+                        <div class="absolute bottom-1/4 -left-16 w-16 h-16 bg-gradient-to-br from-purple-300 to-purple-400 rounded-full flex items-center justify-center floating-icon shadow-lg">
+                            <i class="fas fa-leaf text-purple-700"></i>
+                        </div>
+                        
+                        <!-- Animated rings -->
+                        <div class="absolute inset-0 rounded-full border-2 border-white/20 animate-pulse"></div>
+                        <div class="absolute inset-4 rounded-full border border-white/10 animate-pulse" style="animation-delay: 0.5s;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section-spacing bg-white relative z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12 lg:mb-16">
+                <div class="inline-block bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full mb-4">
+                    <span class="text-blue-600 font-semibold text-sm">HOW IT WORKS</span>
+                </div>
+                <h3 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">Simple Steps, Maximum Impact</h3>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Our platform makes food donation simple, efficient, and impactful through innovative features
+                </p>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <div class="feature-card bg-gradient-to-br from-blue-50 to-blue-100 p-6 lg:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center group">
+                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-map-marker-alt text-2xl text-white"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4 text-gray-800">Smart Location Matching</h4>
+                    <p class="text-gray-600 leading-relaxed">Find nearby NGOs instantly with our geo-tagging system. Connect with organizations in your area for quick and efficient food transfers.</p>
+                </div>
+                <div class="feature-card bg-gradient-to-br from-green-50 to-green-100 p-6 lg:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center group">
+                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-calendar-check text-2xl text-white"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4 text-gray-800">Flexible Scheduling</h4>
+                    <p class="text-gray-600 leading-relaxed">Schedule food pickups at your convenience. Our system allows for real-time coordination between donors and NGOs.</p>
+                </div>
+                <div class="feature-card bg-gradient-to-br from-purple-50 to-purple-100 p-6 lg:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-center group">
+                    <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-chart-line text-2xl text-white"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-4 text-gray-800">Impact Tracking</h4>
+                    <p class="text-gray-600 leading-relaxed">See the real difference you're making. Track meals served, waste reduced, and lives touched through detailed analytics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Food Showcase Section -->
+    <section class="py-16 lg:py-20 bg-gradient-to-br from-orange-50 to-red-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12 lg:mb-16">
+                <div class="inline-block bg-gradient-to-r from-orange-100 to-red-100 px-4 py-2 rounded-full mb-4">
+                    <span class="text-orange-600 font-semibold text-sm">FOOD CATEGORIES</span>
+                </div>
+                <h3 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">What Food Can You Donate?</h3>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    We accept various types of fresh, packaged, and prepared foods. Every donation makes a difference!
+                </p>
+                <div class="w-24 h-1 bg-gradient-to-r from-orange-600 to-red-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <!-- Food Categories Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12">
+                <div class="food-category-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group cursor-pointer transform hover:scale-105">
+                    <div class="text-4xl mb-3 group-hover:animate-bounce">🍎</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Fresh Fruits</h4>
+                    <p class="text-sm text-gray-600">Apples, bananas, oranges & more</p>
+                    <div class="mt-3 text-green-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        ✓ High Impact
+                    </div>
+                </div>
+                
+                <div class="food-category-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group cursor-pointer transform hover:scale-105">
+                    <div class="text-4xl mb-3 group-hover:animate-bounce">🥕</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Vegetables</h4>
+                    <p class="text-sm text-gray-600">Carrots, potatoes, leafy greens</p>
+                    <div class="mt-3 text-green-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        ✓ Nutritious
+                    </div>
+                </div>
+                
+                <div class="food-category-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group cursor-pointer transform hover:scale-105">
+                    <div class="text-4xl mb-3 group-hover:animate-bounce">🌾</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Grains & Rice</h4>
+                    <p class="text-sm text-gray-600">Rice, wheat, cereals</p>
+                    <div class="mt-3 text-green-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        ✓ Long Lasting
+                    </div>
+                </div>
+                
+                <div class="food-category-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group cursor-pointer transform hover:scale-105">
+                    <div class="text-4xl mb-3 group-hover:animate-bounce">🍲</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Cooked Meals</h4>
+                    <p class="text-sm text-gray-600">Ready-to-eat dishes</p>
+                    <div class="mt-3 text-green-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        ✓ Immediate Use
+                    </div>
+                </div>
+                
+                <div class="food-category-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group cursor-pointer transform hover:scale-105">
+                    <div class="text-4xl mb-3 group-hover:animate-bounce">🍞</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Bread & Bakery</h4>
+                    <p class="text-sm text-gray-600">Bread, pastries, baked goods</p>
+                    <div class="mt-3 text-green-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        ✓ Daily Essential
+                    </div>
+                </div>
+                
+                <div class="food-category-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-center group cursor-pointer transform hover:scale-105">
+                    <div class="text-4xl mb-3 group-hover:animate-bounce">🥛</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Dairy Products</h4>
+                    <p class="text-sm text-gray-600">Milk, cheese, yogurt</p>
+                    <div class="mt-3 text-green-600 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        ✓ Protein Rich
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Safety Guidelines -->
+            <div class="bg-white rounded-3xl p-8 shadow-xl">
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">
+                            <i class="fas fa-shield-alt text-green-600 mr-2"></i>
+                            Food Safety Guidelines
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3 group">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors duration-200">
+                                    <i class="fas fa-check text-green-600 text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">Food within expiry date</span>
+                            </div>
+                            <div class="flex items-center space-x-3 group">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors duration-200">
+                                    <i class="fas fa-check text-green-600 text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">Properly packaged & labeled</span>
+                            </div>
+                            <div class="flex items-center space-x-3 group">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors duration-200">
+                                    <i class="fas fa-check text-green-600 text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">Fresh and safe to consume</span>
+                            </div>
+                            <div class="flex items-center space-x-3 group">
+                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors duration-200">
+                                    <i class="fas fa-check text-green-600 text-sm"></i>
+                                </div>
+                                <span class="text-gray-700">Stored at proper temperature</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl p-6 inline-block">
+                            <div class="text-6xl mb-4">👨‍🍳</div>
+                            <h5 class="text-lg font-bold text-gray-800 mb-2">Quality Assured</h5>
+                            <p class="text-gray-600 text-sm">Every donation goes through our quality check process</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose ServeWell Section -->
+    <section class="py-16 lg:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12 lg:mb-16">
+                <div class="inline-block bg-gradient-to-r from-purple-100 to-pink-100 px-4 py-2 rounded-full mb-4">
+                    <span class="text-purple-600 font-semibold text-sm">WHY CHOOSE US</span>
+                </div>
+                <h2 class="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">
+                    <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        Why Choose ServeWell?
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    We're not just a platform - we're a movement towards a hunger-free, waste-free world
+                </p>
+                <div class="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Features List -->
+                <div class="space-y-8">
+                    <div class="flex items-start space-x-4 group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-lightning-bolt text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Lightning Fast</h3>
+                            <p class="text-gray-600 leading-relaxed">Connect with nearby NGOs instantly. Our smart matching algorithm ensures your donation reaches those who need it most, within minutes.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4 group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-shield-alt text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">100% Secure & Transparent</h3>
+                            <p class="text-gray-600 leading-relaxed">Track your donations in real-time. Every meal is accounted for with complete transparency and verified impact reporting.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-4 group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-globe text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Global Network</h3>
+                            <p class="text-gray-600 leading-relaxed">Join a worldwide community of changemakers. Connect with verified NGOs and make a global impact from your local community.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visual Element -->
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 text-center">
+                        <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-heart text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Start Making a Difference</h3>
+                        <p class="text-gray-600 mb-6">Every donation creates a ripple effect of positive change in your community and beyond.</p>
+                        {% if not session.user_id %}
+                            <a href="{{ url_for('signup') }}" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg">
+                                <i class="fas fa-rocket mr-2"></i>Get Started Today
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('donate') }}" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-green-700 hover:to-blue-700 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg">
+                                <i class="fas fa-plus mr-2"></i>Make a Donation
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 lg:py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12 lg:mb-16">
+                <div class="inline-block bg-gradient-to-r from-green-100 to-blue-100 px-4 py-2 rounded-full mb-4">
+                    <span class="text-green-600 font-semibold text-sm">TESTIMONIALS</span>
+                </div>
+                <h3 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-4">Stories of Impact</h3>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Hear from our community members who are making a difference every day
+                </p>
+                <div class="w-24 h-1 bg-gradient-to-r from-green-600 to-blue-600 mx-auto mt-4 rounded-full"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8 transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-l-4 border-gray-300 group">
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-quote-left text-2xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 mb-4">Testimonials from our community will appear here</p>
+                        <p class="text-sm text-gray-400">Join us to share your story!</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8 transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-l-4 border-gray-300 group">
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-quote-left text-2xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 mb-4">Share your impact story</p>
+                        <p class="text-sm text-gray-400">Your experience matters!</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8 transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-l-4 border-gray-300 group">
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-quote-left text-2xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 mb-4">Be part of our story</p>
+                        <p class="text-sm text-gray-400">Start donating today!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 lg:py-20 bg-gradient-to-r from-purple-600 to-pink-600 text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="relative max-w-4xl mx-auto px-4 text-center">
+            <h3 class="text-3xl lg:text-4xl font-bold mb-6">Ready to Make a Difference?</h3>
+            <p class="text-xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">Join thousands of donors and NGOs who are already transforming communities through food sharing.</p>
+            {% if not session.user_id %}
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{{ url_for('signup') }}" class="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-user-plus mr-2"></i>Join as Donor
+                    </a>
+                    <a href="{{ url_for('signup') }}" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105">
+                        <i class="fas fa-building mr-2"></i>Register NGO
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-2xl font-semibold">Welcome back! Ready to continue making an impact?</p>
+            {% endif %}
+        </div>
+        
+        <!-- Floating elements for visual appeal -->
+        <div class="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-10 right-10 w-16 h-16 bg-white bg-opacity-10 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+    </section>
+
+    <!-- Newsletter & Community Section -->
+    <section class="py-16 lg:py-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="relative max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12 lg:mb-16">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4">Stay Connected with Our Community</h2>
+                <p class="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+                    Get weekly impact reports, success stories, and tips on reducing food waste
+                </p>
+                <div class="w-24 h-1 bg-white mx-auto mt-4 rounded-full"></div>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                <!-- Newsletter Signup -->
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-3xl p-6 lg:p-8 border border-white border-opacity-20">
+                    <h3 class="text-2xl font-bold mb-6 text-center">
+                        <i class="fas fa-envelope text-yellow-300 mr-2"></i>
+                        Subscribe to Our Newsletter
+                    </h3>
+                    <form class="space-y-4 newsletter-form">
+                        <div>
+                            <input type="email" placeholder="Enter your email address" required
+                                   class="newsletter-input w-full px-4 py-3 rounded-xl bg-white bg-opacity-20 border border-white border-opacity-30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-300">
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <input type="text" placeholder="First Name" required
+                                   class="newsletter-input w-full px-4 py-3 rounded-xl bg-white bg-opacity-20 border border-white border-opacity-30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-300">
+                            <select class="newsletter-input w-full px-4 py-3 rounded-xl bg-white bg-opacity-20 border border-white border-opacity-30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-300" required>
+                                <option value="" class="text-gray-800">I am a...</option>
+                                <option value="donor" class="text-gray-800">Donor</option>
+                                <option value="ngo" class="text-gray-800">NGO</option>
+                                <option value="volunteer" class="text-gray-800">Volunteer</option>
+                                <option value="other" class="text-gray-800">Other</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-800 font-bold py-4 px-8 rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-paper-plane mr-2"></i>Join Our Community
+                        </button>
+                    </form>
+                    <div class="mt-6 text-center">
+                        <p class="text-sm opacity-80">Join 25,000+ subscribers already making a difference</p>
+                    </div>
+                </div>
+                
+                <!-- Community Stats -->
+                <div class="space-y-6">
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-6 border border-white border-opacity-20">
+                        <h4 class="text-xl font-bold mb-4">
+                            <i class="fas fa-trophy text-yellow-300 mr-2"></i>
+                            This Week's Champions
+                        </h4>
+                        <div class="text-center py-8 text-white text-opacity-80">
+                            <i class="fas fa-trophy text-4xl text-yellow-300 mb-4 opacity-50"></i>
+                            <p class="text-lg">Weekly champions will appear here</p>
+                            <p class="text-sm opacity-60">Start donating to compete for the top spots!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-6 border border-white border-opacity-20">
+                        <h4 class="text-xl font-bold mb-4">
+                            <i class="fas fa-quote-left text-pink-300 mr-2"></i>
+                            Quote of the Day
+                        </h4>
+                        <blockquote class="text-lg italic leading-relaxed">
+                            "The best way to find yourself is to lose yourself in the service of others."
+                        </blockquote>
+                        <div class="text-right mt-3 text-pink-300 font-semibold">- Mahatma Gandhi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Started Section -->
+    <section class="py-16 lg:py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Story Content -->
+                <div class="space-y-6">
+                    <div class="inline-block bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full">
+                        <span class="text-blue-600 font-semibold text-sm">OUR STORY</span>
+                    </div>
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 leading-tight">
+                        A Simple Idea to Change the World
+                    </h2>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        It all started when our founder witnessed perfectly good food being thrown away while families went hungry just blocks away. That moment sparked an idea: what if we could bridge this gap with technology?
+                    </p>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        ServeWell is designed to become a thriving ecosystem that will connect donors with NGOs, creating a ripple effect of positive change in communities worldwide. We're just getting started, and every new member brings us closer to that vision.
+                    </p>
+                    
+                    <!-- Vision Points -->
+                    <div class="space-y-6 mt-8">
+                        <div class="flex items-start space-x-4 group">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-lightbulb text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">The Vision</h4>
+                                <p class="text-gray-600">A world where technology connects surplus food with those who need it most</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4 group">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-users text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">The Community</h4>
+                                <p class="text-gray-600">Building a network of caring individuals and organizations ready to make a difference</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4 group">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-rocket text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">The Future</h4>
+                                <p class="text-gray-600">Starting today, creating the foundation for tomorrow's hunger-free world</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3 mt-8">
+                        <div class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold text-sm">
+                            <i class="fas fa-leaf mr-2"></i>Eco-Friendly
+                        </div>
+                        <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold text-sm">
+                            <i class="fas fa-users mr-2"></i>Community-Driven
+                        </div>
+                        <div class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold text-sm">
+                            <i class="fas fa-heart mr-2"></i>Impact-Focused
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Visual Element -->
+                <div class="order-first lg:order-last">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-6 lg:p-8">
+                        <!-- Mission Statement -->
+                        <div class="bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-2xl p-6 text-center">
+                            <h3 class="text-xl font-bold mb-3">Our Mission</h3>
+                            <p class="text-lg opacity-90 leading-relaxed">
+                                "To create a world where no food goes to waste and no person goes hungry."
+                            </p>
+                            <div class="mt-4 flex justify-center space-x-4">
+                                <i class="fas fa-utensils text-2xl text-yellow-300"></i>
+                                <i class="fas fa-heart text-2xl text-red-300"></i>
+                                <i class="fas fa-globe text-2xl text-green-300"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Interactive Food Elements -->
+                        <div class="mt-6 space-y-4">
+                            <div class="bg-white rounded-2xl p-6 shadow-lg">
+                                <h4 class="text-lg font-bold text-gray-800 mb-3 text-center">Food Impact Calculator</h4>
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-green-50 rounded-lg p-3">
+                                        <div class="text-2xl mb-1">🍽️</div>
+                                        <div class="text-sm text-gray-600">1 Donation =</div>
+                                        <div class="font-bold text-green-600">3 Meals</div>
+                                    </div>
+                                    <div class="bg-blue-50 rounded-lg p-3">
+                                        <div class="text-2xl mb-1">🌱</div>
+                                        <div class="text-sm text-gray-600">Saves</div>
+                                        <div class="font-bold text-blue-600">2kg Waste</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-2xl p-4 shadow-lg">
+                                <h4 class="text-center font-bold text-gray-800 mb-3">Types of Food We Accept</h4>
+                                <div class="flex justify-center space-x-3 text-2xl">
+                                    <span title="Fresh Fruits">🍎</span>
+                                    <span title="Vegetables">🥕</span>
+                                    <span title="Grains & Rice">🌾</span>
+                                    <span title="Cooked Meals">🍲</span>
+                                    <span title="Bread & Bakery">🍞</span>
+                                    <span title="Dairy Products">🥛</span>
+                                </div>
+                                <p class="text-center text-xs text-gray-600 mt-2">Fresh, packaged, and cooked foods welcome!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Motivational Banner -->
+    <section class="py-16 lg:py-20 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="relative max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl sm:text-4xl lg:text-6xl font-bold mb-6 leading-tight">
+                Together, We Can End Hunger
+            </h2>
+            <p class="text-lg sm:text-xl lg:text-2xl mb-8 opacity-90 max-w-4xl mx-auto leading-relaxed">
+                Join thousands of changemakers who believe that small acts of kindness can create extraordinary impact
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mb-8">
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm px-6 py-3 rounded-full border border-white border-opacity-30">
+                    <span class="font-bold text-lg">🌟 "Be the change you wish to see"</span>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm px-6 py-3 rounded-full border border-white border-opacity-30">
+                    <span class="font-bold text-lg">🤝 "Together we can do much"</span>
+                </div>
+            </div>
+            {% if not session.user_id %}
+                <a href="{{ url_for('signup') }}" class="inline-flex items-center bg-white text-red-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                    <i class="fas fa-rocket mr-3"></i>Start Your Journey Today
+                    <i class="fas fa-arrow-right ml-3"></i>
+                </a>
+            {% endif %}
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-10 left-10 w-16 h-16 lg:w-20 lg:h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-10 right-10 w-12 h-12 lg:w-16 lg:h-16 bg-white bg-opacity-10 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/2 left-1/4 w-8 h-8 lg:w-12 lg:h-12 bg-white bg-opacity-10 rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+    </section>
+
+    <!-- Enhanced Footer -->
+    <footer class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16 lg:py-20 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-10 left-10 text-4xl animate-pulse">🍽️</div>
+            <div class="absolute top-20 right-20 text-3xl animate-bounce">❤️</div>
+            <div class="absolute bottom-20 left-20 text-3xl animate-pulse">🤝</div>
+            <div class="absolute bottom-10 right-10 text-4xl animate-ping">🌟</div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto px-4">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <!-- Company Info -->
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <!-- Enhanced Footer Logo -->
+                    <div class="flex items-center mb-6 group">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                            <i class="fas fa-heart text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-bold bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">ServeWell</h4>
+                            <p class="text-xs text-gray-400 font-medium">Nourish • Connect • Transform</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 leading-relaxed mb-6 text-sm">Connecting hearts, transforming lives through the power of food sharing. Join our mission to end hunger and reduce waste in communities worldwide.</p>
+                    
+                    <!-- Enhanced Social Links -->
+                    <div class="mb-6">
+                        <h5 class="font-semibold mb-4 text-orange-400 text-sm">Connect With Us</h5>
+                        <div class="flex space-x-3">
+                            <a href="#" class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center text-white hover:from-blue-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">
+                                <i class="fab fa-facebook text-sm"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg flex items-center justify-center text-white hover:from-sky-400 hover:to-sky-500 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">
+                                <i class="fab fa-twitter text-sm"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg flex items-center justify-center text-white hover:from-pink-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">
+                                <i class="fab fa-instagram text-sm"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gradient-to-br from-blue-700 to-indigo-700 rounded-lg flex items-center justify-center text-white hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">
+                                <i class="fab fa-linkedin text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h5 class="font-semibold mb-6 text-orange-400 border-b border-gray-700 pb-2">Quick Links</h5>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="#features" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>How It Works
+                        </a></li>
+                        <li><a href="#impact" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Our Impact
+                        </a></li>
+                        <li><a href="{{ url_for('signup') }}" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Get Started
+                        </a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>About Us
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support -->
+                <div>
+                    <h5 class="font-semibold mb-6 text-orange-400 border-b border-gray-700 pb-2">Support</h5>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Help Center
+                        </a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Contact Us
+                        </a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Privacy Policy
+                        </a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Terms of Service
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <!-- For Organizations -->
+                <div>
+                    <h5 class="font-semibold mb-6 text-orange-400 border-b border-gray-700 pb-2">For Organizations</h5>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="{{ url_for('signup') }}" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Join as NGO
+                        </a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Partnership Program
+                        </a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Resources
+                        </a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition duration-300 flex items-center group text-sm">
+                            <i class="fas fa-chevron-right text-xs mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>Success Stories
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Newsletter Signup -->
+            <div class="bg-gradient-to-r from-orange-500/10 to-pink-500/10 rounded-2xl p-6 mb-8 border border-orange-500/20">
+                <div class="text-center">
+                    <h5 class="font-semibold mb-2 text-orange-400">Stay Updated</h5>
+                    <p class="text-gray-300 text-sm mb-4">Get the latest updates on our impact and new features</p>
+                    <div class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                        <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 text-sm">
+                        <button class="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-6 py-2 rounded-lg hover:from-orange-600 hover:to-pink-600 transition-all duration-300 font-medium text-sm">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-700 pt-8 text-center">
+                <p class="text-gray-400 text-sm">&copy; 2025 ServeWell. All rights reserved. Made with <span class="text-red-500 animate-pulse">❤️</span> for a better world.</p>
+                <p class="text-gray-500 text-xs mt-2">Building communities through compassion and technology</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 text-white rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center justify-center group">
+        <i class="fas fa-arrow-up text-lg group-hover:animate-bounce"></i>
+        <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-pink-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </button>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
