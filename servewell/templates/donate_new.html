@@ -72,7 +72,7 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
-                    <i class="fas fa-heart text-red-500 text-2xl mr-2"></i>
+                    <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="ServeWell Logo" class="nav-logo mr-2 servewell-logo logo-clean logo-vertical-center">
                     <a href="{{ url_for('home') }}" class="text-2xl font-bold text-blue-600">ServeWell</a>
                 </div>
                 <div class="flex items-center space-x-6">
@@ -97,7 +97,7 @@
     <section class="bg-gradient-to-br from-green-600 via-blue-600 to-purple-600 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-5xl font-bold mb-6">
-                <i class="fas fa-heart text-red-300 mr-3"></i>
+                <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="ServeWell Logo" class="hero-logo inline mr-3 servewell-logo logo-clean logo-vertical-center">
                 Make a Food Donation
             </h1>
             <p class="text-xl opacity-90 max-w-2xl mx-auto">
@@ -214,7 +214,7 @@
                         <!-- Submit Button -->
                         <button type="submit" 
                                 class="w-full bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 text-white py-5 px-8 rounded-xl font-bold text-lg hover:from-green-700 hover:via-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl">
-                            <i class="fas fa-heart mr-3"></i>Submit Food Donation
+                            <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="ServeWell Logo" class="button-logo inline mr-3 servewell-logo">Submit Food Donation
                             <i class="fas fa-arrow-right ml-3"></i>
                         </button>
                     </form>
@@ -277,7 +277,7 @@
 
                     <!-- Thank You Message -->
                     <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl p-8 text-center">
-                        <i class="fas fa-heart text-5xl mb-4 text-pink-200"></i>
+                        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="ServeWell Logo" class="logo-large mx-auto mb-4 logo-bounce servewell-logo logo-clean logo-center">
                         <h3 class="text-2xl font-bold mb-3">Thank You!</h3>
                         <p class="opacity-90 text-lg">Your generosity makes a real difference in someone's life today. Together, we're building a more caring community.</p>
                     </div>
@@ -292,7 +292,7 @@
             <div class="grid md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center mb-4">
-                        <i class="fas fa-heart text-red-500 text-2xl mr-2"></i>
+                        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="ServeWell Logo" class="footer-logo mr-2 servewell-logo logo-clean">
                         <h4 class="text-2xl font-bold">ServeWell</h4>
                     </div>
                     <p class="text-gray-400">Connecting hearts, transforming lives through the power of food sharing.</p>

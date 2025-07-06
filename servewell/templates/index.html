@@ -48,11 +48,10 @@
     <!-- Stunning Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-logo">
-            <i class="fas fa-heart text-white text-3xl"></i>
+            <div class="loading-spinner-custom"></div>
         </div>
         <h1 class="loading-text">ServeWell</h1>
         <p class="loading-subtitle">Nourish • Connect • Transform</p>
-        <div class="loading-spinner"></div>
     </div>
     
     <style>
@@ -88,6 +87,15 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
+        .loading-spinner-custom {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
         .loading-text {
             font-size: 32px;
             font-weight: bold;
@@ -102,15 +110,6 @@
             margin-bottom: 40px;
             animation: fadeInUp 1s ease forwards 1s;
             letter-spacing: 2px;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
         }
         
         @keyframes gradient-shift {
@@ -165,30 +164,9 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center group cursor-pointer">
-                    <!-- Enhanced Attractive Logo -->
-                    <div class="relative mr-3">
-                        <!-- Main logo container with gradient background -->
-                        <div class="w-14 h-14 bg-gradient-to-br from-orange-400 via-red-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-500 relative overflow-hidden transform group-hover:scale-110">
-                            <!-- Animated shine effect -->
-                            <div class="absolute inset-0 bg-gradient-to-br from-white via-transparent to-transparent opacity-20 transform -skew-y-12 translate-x-full group-hover:translate-x-[-200%] transition-transform duration-700"></div>
-                            
-                            <!-- Logo icons combination -->
-                            <div class="relative z-10 flex items-center justify-center">
-                                <!-- Heart icon (main) -->
-                                <i class="fas fa-heart text-white text-xl transform group-hover:scale-125 transition-transform duration-300"></i>
-                                <!-- Bowl/plate icon overlay -->
-                                <div class="absolute -top-1 -right-1 w-4 h-4 bg-yellow-300 rounded-full flex items-center justify-center opacity-90 group-hover:opacity-100 transition-opacity duration-300">
-                                    <i class="fas fa-utensils text-orange-700 text-xs"></i>
-                                </div>
-                            </div>
-                            
-                            <!-- Pulsing border effect -->
-                            <div class="absolute inset-0 rounded-2xl border-2 border-white opacity-0 group-hover:opacity-50 group-hover:scale-110 transition-all duration-500"></div>
-                        </div>
-                        
-                        <!-- Floating sparkles -->
-                        <div class="absolute -top-1 -left-1 w-2 h-2 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping"></div>
-                        <div class="absolute -bottom-1 -right-1 w-1.5 h-1.5 bg-pink-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-bounce"></div>
+                    <!-- ServeWell Logo -->
+                    <div class="flex items-center mr-4">
+                        <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="ServeWell Logo" class="nav-logo servewell-logo logo-clean logo-vertical-center">
                     </div>
                     
                     <!-- Enhanced Text Logo -->
@@ -221,19 +199,19 @@
                     
                     {% if session.user_id %}
                         <div class="flex items-center space-x-4">
-                            <span class="text-gray-600 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium">
+                            <span class="text-gray-600 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium flex items-center">
                                 <i class="fas fa-user-circle mr-1 text-orange-500"></i>{{ session.username }}
                             </span>
                             {% if session.role == 'donor' %}
-                                <a href="{{ url_for('donate') }}" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2.5 rounded-full hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium">
+                                <a href="{{ url_for('donate') }}" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2.5 rounded-full hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium nav-button">
                                     <i class="fas fa-hand-holding-heart mr-2"></i>Donate Food
                                 </a>
                             {% elif session.role == 'ngo' %}
-                                <a href="{{ url_for('ngo_dashboard') }}" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2.5 rounded-full hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium">
+                                <a href="{{ url_for('ngo_dashboard') }}" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2.5 rounded-full hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-medium nav-button">
                                     <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
                                 </a>
                             {% endif %}
-                            <a href="{{ url_for('logout') }}" class="text-red-500 hover:text-red-600 transition-all duration-300 p-2 rounded-full hover:bg-red-50">
+                            <a href="{{ url_for('logout') }}" class="text-red-500 hover:text-red-600 transition-all duration-300 p-2 rounded-full hover:bg-red-50 flex items-center">
                                 <i class="fas fa-sign-out-alt"></i>
                             </a>
                         </div>
@@ -274,11 +252,11 @@
                             <i class="fas fa-user-circle mr-2"></i>Welcome, {{ session.username }}!
                         </div>
                         {% if session.role == 'donor' %}
-                            <a href="{{ url_for('donate') }}" class="block bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition duration-300 mb-3 text-center">
+                            <a href="{{ url_for('donate') }}" class="block bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition duration-300 mb-3 mobile-menu-button">
                                 <i class="fas fa-hand-holding-heart mr-2"></i>Donate Food
                             </a>
                         {% elif session.role == 'ngo' %}
-                            <a href="{{ url_for('ngo_dashboard') }}" class="block bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-300 mb-3 text-center">
+                            <a href="{{ url_for('ngo_dashboard') }}" class="block bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-300 mb-3 mobile-menu-button">
                                 <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
                             </a>
                         {% endif %}
@@ -365,11 +343,11 @@
                         <div class="flex flex-col sm:flex-row gap-4 fade-in justify-center lg:justify-start hero-buttons">
                         {% if session.user_id %}
                             {% if session.role == 'donor' %}
-                                <a href="{{ url_for('donate') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <a href="{{ url_for('donate') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-all duration-300 hero-button transform hover:scale-105 shadow-lg hover:shadow-xl">
                                     <i class="fas fa-hand-holding-heart mr-2"></i>Donate Food Now
                                 </a>
                             {% elif session.role == 'ngo' %}
-                                <a href="{{ url_for('ngo_dashboard') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 inline-flex items-center justify-center transform hover:scale-105 shadow-lg hover:shadow-xl">
+                                <a href="{{ url_for('ngo_dashboard') }}" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 hero-button transform hover:scale-105 shadow-lg hover:shadow-xl">
                                     <i class="fas fa-tachometer-alt mr-2"></i>View Dashboard
                                 </a>
                             {% endif %}
@@ -958,8 +936,8 @@
                 <div class="sm:col-span-2 lg:col-span-1">
                     <!-- Enhanced Footer Logo -->
                     <div class="flex items-center mb-6 group">
-                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                            <i class="fas fa-heart text-white text-xl"></i>
+                        <div class="logo-bg-container mr-3">
+                            <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="ServeWell Logo" class="footer-logo servewell-logo logo-clean">
                         </div>
                         <div>
                             <h4 class="text-2xl font-bold bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">ServeWell</h4>
@@ -978,7 +956,7 @@
                             <a href="#" class="w-10 h-10 bg-gradient-to-br from-sky-500 to-sky-600 rounded-lg flex items-center justify-center text-white hover:from-sky-400 hover:to-sky-500 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">
                                 <i class="fab fa-twitter text-sm"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg flex items-center justify-center text-white hover:from-pink-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">
+                            <a href="https://www.instagram.com/servewell_?igsh=MXg5bm1peno5NGY1dw==" target="_blank" class="w-10 h-10 bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg flex items-center justify-center text-white hover:from-pink-500 hover:to-purple-500 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">
                                 <i class="fab fa-instagram text-sm"></i>
                             </a>
                             <a href="#" class="w-10 h-10 bg-gradient-to-br from-blue-700 to-indigo-700 rounded-lg flex items-center justify-center text-white hover:from-blue-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1 shadow-lg">

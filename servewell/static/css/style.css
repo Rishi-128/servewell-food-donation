@@ -415,14 +415,25 @@ section:target::before {
 
 /* Enhanced mobile menu */
 .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 40;
+    padding: 80px 20px 20px;
     transition: all 0.3s ease;
     transform: translateX(-100%);
     opacity: 0;
+    visibility: hidden;
 }
 
 .mobile-menu.open {
     transform: translateX(0);
     opacity: 1;
+    visibility: visible;
 }
 
 /* Progress bar */
@@ -1228,331 +1239,364 @@ blockquote::before {
     animation: typing 3s steps(40, end), blink 1s step-end infinite;
 }
 
-/* Enhanced Logo Styles */
-.logo-container {
-    perspective: 1000px;
-}
-
-.logo-main {
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-style: preserve-3d;
-}
-
-.logo-container:hover .logo-main {
-    transform: rotateY(10deg) rotateX(5deg);
-}
-
-.logo-shine {
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.8) 50%, transparent 70%);
-    transform: translateX(-100%) skewX(-25deg);
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.logo-container:hover .logo-shine {
-    transform: translateX(200%) skewX(-25deg);
-}
-
-/* Enhanced Footer Styles */
-.footer-link {
-    position: relative;
-    overflow: hidden;
-}
-
-.footer-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: -100%;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #f97316, transparent);
-    transition: left 0.5s ease;
-}
-
-.footer-link:hover::after {
-    left: 100%;
-}
-
 /* =========================
-   GEOAPIFY MAPS STYLES
+   LOGO OPTIMIZATION STYLES
    ========================= */
 
-/* Custom marker styles */
-.custom-marker {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.custom-donation-marker {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.custom-donation-marker div {
-    animation: markerPulse 2s infinite;
-}
-
-@keyframes markerPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* Map container styles */
-.map-container {
-    position: relative;
+/* Logo container styles */
+.logo-container {
+    display: flex;
+    align-items: center;
     transition: all 0.3s ease;
 }
 
-.map-container:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+.logo-container:hover {
+    transform: scale(1.02);
 }
 
-.donations-map {
+/* Logo image styles - Remove white background */
+.logo-image {
+    border-radius: 8px;
     transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    /* Remove white background using CSS filters */
+    background-color: transparent;
+    mix-blend-mode: multiply;
 }
 
-/* Popup styles */
-.leaflet-popup-content-wrapper {
-    border-radius: 12px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
-    border: 1px solid #e5e7eb !important;
+.logo-image:hover {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+    transform: scale(1.05);
 }
 
-.leaflet-popup-content {
-    margin: 12px 16px !important;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+/* Logo sizes for different contexts */
+.logo-small {
+    height: 32px;
+    width: 32px;
 }
 
-.leaflet-popup-tip {
-    background: white !important;
-    border: 1px solid #e5e7eb !important;
+.logo-medium {
+    height: 48px;
+    width: 48px;
 }
 
-.map-popup {
-    min-width: 200px;
+.logo-large {
+    height: 72px;
+    width: 72px;
 }
 
-.map-popup .font-bold {
-    color: #1f2937;
-    margin-bottom: 8px;
+.logo-xl {
+    height: 96px;
+    width: 96px;
 }
 
-.map-popup .text-sm {
-    color: #6b7280;
-    line-height: 1.4;
-}
-
-.map-popup .flex {
-    margin-top: 12px;
-}
-
-.map-popup a, .map-popup button {
-    font-size: 12px;
-    padding: 6px 12px;
+/* Navigation logo specific styles - Clean background removal */
+.nav-logo {
+    height: 48px;
+    width: 48px;
+    object-fit: contain;
     border-radius: 6px;
-    text-decoration: none;
+    transition: all 0.3s ease;
+    /* Remove white background */
+    background: transparent;
+    mix-blend-mode: multiply;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.nav-logo:hover {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+    transform: translateY(-1px);
+}
+
+/* Footer logo styles - Clean background removal */
+.footer-logo {
+    height: 44px;
+    width: 44px;
+    object-fit: contain;
+    border-radius: 8px;
+    padding: 4px;
+    transition: all 0.3s ease;
+    /* Remove white background and use subtle backdrop */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    mix-blend-mode: normal;
+}
+
+.footer-logo:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(5deg) scale(1.1);
+}
+
+/* Loading screen logo */
+.loading-logo img {
+    animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Hero section logo - Clean background removal */
+.hero-logo {
+    height: 64px;
+    width: 64px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    /* Remove white background */
+    background: transparent;
+    mix-blend-mode: multiply;
+    filter: brightness(1.1) contrast(1.1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* Button logos - Clean background removal */
+.button-logo {
+    height: 28px;
+    width: 28px;
+    object-fit: contain;
+    /* Remove white background and make logo white for dark buttons */
+    background: transparent;
+    filter: brightness(0) invert(1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Mobile responsive logo adjustments */
+@media (max-width: 768px) {
+    .nav-logo {
+        height: 44px;
+        width: 44px;
+    }
+    
+    .hero-logo {
+        height: 56px;
+        width: 56px;
+    }
+    
+    .footer-logo {
+        height: 40px;
+        width: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-logo {
+        height: 40px;
+        width: 40px;
+    }
+    
+    .hero-logo {
+        height: 52px;
+        width: 52px;
+    }
+    
+    .footer-logo {
+        height: 36px;
+        width: 36px;
+    }
+    
+    .button-logo {
+        height: 24px;
+        width: 24px;
+    }
+}
+
+/* Logo animation effects */
+.logo-pulse {
+    animation: logoPulse 2s infinite;
+}
+
+@keyframes logoPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.logo-bounce {
+    animation: logoBounce 1s ease-in-out;
+}
+
+@keyframes logoBounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
+}
+
+/* Logo with background container - Updated for clean background */
+.logo-bg-container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    /* Ensure contained logo has no white background */
+    backdrop-filter: blur(10px);
+}
+
+.logo-bg-container img {
+    background: transparent !important;
+    mix-blend-mode: multiply;
+}
+
+.logo-bg-container:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Dark mode logo adjustments - Updated */
+@media (prefers-color-scheme: dark) {
+    .logo-image, .servewell-logo {
+        filter: brightness(1.3) contrast(1.2) drop-shadow(0 2px 4px rgba(255, 255, 255, 0.1));
+        background: transparent !important;
+    }
+    
+    .logo-bg-container {
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo-bg-container:hover {
+        background: rgba(0, 0, 0, 0.8);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .logo-bg-container img {
+        background: transparent !important;
+        mix-blend-mode: screen;
+    }
+}
+
+/* Advanced logo background removal techniques */
+.logo-clean {
+    background: transparent !important;
+    mix-blend-mode: multiply;
+    filter: contrast(1.2) brightness(1.1);
+}
+
+/* Alternative approach for logos with white backgrounds */
+.logo-mask {
+    background: transparent !important;
+    /* Use CSS mask to remove white background */
+    -webkit-mask-image: 
+        radial-gradient(circle at center, black 40%, transparent 50%),
+        linear-gradient(45deg, transparent 40%, black 60%);
+    mask-image: 
+        radial-gradient(circle at center, black 40%, transparent 50%),
+        linear-gradient(45deg, transparent 40%, black 60%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+}
+
+/* For logos that need color adjustment */
+.logo-color-adjust {
+    filter: 
+        contrast(1.3) 
+        brightness(1.1) 
+        saturate(1.2) 
+        hue-rotate(0deg);
+}
+
+/* Specific fix for ServeWell logo */
+.servewell-logo {
+    background: transparent !important;
+    /* Remove white background using advanced CSS */
+    filter: 
+        contrast(1.4) 
+        brightness(1.2) 
+        saturate(1.1) 
+        drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    mix-blend-mode: multiply;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+/* Ensure proper alignment for all logo instances */
+.logo-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-vertical-center {
+    vertical-align: middle;
+}
+
+/* Fix for logo in flex containers */
+.flex-logo {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
+    line-height: 1;
 }
 
-.map-popup a:hover, .map-popup button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Autocomplete styles */
-.autocomplete-container {
+/* Logo positioning fixes */
+.logo-position-fix {
     position: relative;
+    top: -1px; /* Slight adjustment for better visual alignment */
 }
 
-.autocomplete-items {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 99;
+/* Dashboard button alignment fixes */
+.dashboard-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1;
 }
 
-.autocomplete-item {
-    padding: 12px 16px;
-    border-bottom: 1px solid #f3f4f6;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.dashboard-button i {
+    vertical-align: middle;
+    line-height: 1;
 }
 
-.autocomplete-item:last-child {
-    border-bottom: none;
+/* Navigation button alignment */
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-.autocomplete-item:hover {
-    background-color: #f9fafb;
+.nav-button i {
+    vertical-align: middle;
+    line-height: 1;
 }
 
-.autocomplete-item.active {
-    background-color: #dbeafe;
-}
-
-.autocomplete-item .font-medium {
-    color: #1f2937;
-    font-weight: 500;
-}
-
-.autocomplete-item .text-sm {
-    color: #6b7280;
-    font-size: 13px;
-}
-
-/* Map controls */
-.leaflet-control-container {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-}
-
-.leaflet-control-zoom a {
-    background: white !important;
-    border: 1px solid #e5e7eb !important;
-    color: #374151 !important;
-    font-weight: 600 !important;
-    transition: all 0.2s !important;
-}
-
-.leaflet-control-zoom a:hover {
-    background: #f3f4f6 !important;
-    border-color: #d1d5db !important;
-}
-
-/* Tab styles for map/list view */
-.tab-button {
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.tab-button:not(.active):hover {
-    background-color: #e5e7eb;
-    color: #374151;
-}
-
-.tab-button.active {
-    background-color: #3b82f6;
-    color: white;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-}
-
-/* Loading states */
-.map-loading {
+/* Mobile menu button alignment */
+.mobile-menu-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 300px;
-    background: #f9fafb;
-    border-radius: 12px;
-    color: #6b7280;
+    line-height: 1;
+    width: 100%;
+    text-align: center;
 }
 
-.map-loading i {
-    font-size: 2rem;
-    margin-bottom: 8px;
-    animation: spin 1s linear infinite;
+.mobile-menu-button i {
+    vertical-align: middle;
+    line-height: 1;
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* Mobile responsive map styles */
-@media (max-width: 768px) {
-    .map-container, .donations-map {
-        height: 250px;
-    }
-    
-    .autocomplete-items {
-        max-height: 150px;
-    }
-    
-    .map-popup {
-        min-width: 180px;
-    }
-    
-    .map-popup .flex {
-        flex-direction: column;
-        gap: 6px;
-    }
-    
-    .map-popup a, .map-popup button {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-/* Map error states */
-.map-error {
-    display: flex;
-    flex-direction: column;
+/* Hero button alignment */
+.hero-button {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 300px;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 12px;
-    color: #dc2626;
-    text-align: center;
-    padding: 20px;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-.map-error i {
-    font-size: 2rem;
-    margin-bottom: 12px;
-    opacity: 0.7;
-}
-
-.map-error h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.map-error p {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-/* Enhanced marker clustering (if needed) */
-.marker-cluster-small {
-    background-color: rgba(34, 197, 94, 0.9);
-    border: 2px solid white;
-    border-radius: 50%;
-    color: white;
-    font-weight: bold;
-    text-align: center;
+.hero-button i {
+    vertical-align: middle;
     line-height: 1;
 }
 
-.marker-cluster-medium {
-    background-color: rgba(59, 130, 246, 0.9);
-    border: 2px solid white;
-    border-radius: 50%;
-    color: white;
-    font-weight: bold;
-    text-align: center;
+/* Fix for all button icons */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
     line-height: 1;
 }
 
-.marker-cluster-large {
-    background-color: rgba(168, 85, 247, 0.9);
-    border: 2px solid white;
-    border-radius: 50%;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    line-height: 1;
-}
+/* Enhanced navigation alignment */
