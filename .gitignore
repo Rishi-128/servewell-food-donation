@@ -8,3 +8,21 @@ venv/
 .env
 .DS_Store
 *.log
+
+# SENSITIVE DATA - DO NOT COMMIT
+data/users.json
+data/donations.json
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Documentation that shouldn't be public
+FIXES_SUMMARY.md
+PRODUCTION_SETUP.md
+QUICK_DEPLOY.md
+DEPLOYMENT_GUIDE.md
+
+# Test files
+test_app.py
+start_app.py
